@@ -1,0 +1,63 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+int Rotate(bool turn, int step, int number) {
+
+    int temp = turn ? step : -step;
+    return (number + temp % 100 + 100 * 100) % 100;
+}
+
+int CountZeroCrossings(bool turn, int step, int number) {
+
+    int start = number;
+    int s = step;
+
+    int target;
+    if (turn) {
+        target = (100 - start) % 100;
+    }
+    else {
+        target = start % 100;
+    }
+
+    if (target == 0) target = 100;
+
+    if (target > s) return 0;
+
+    int count = 1;
+    int remaining = s - target;
+
+    count += remaining / 100;
+
+    return count;
+}
+
+int main() {
+    string input;
+    getline(cin, input);
+
+    int number = 50;
+    bool LR = true;
+    int step = 0;
+    int totalZeroHits = 0;
+
+    for (size_t i = 0; i <= input.length(); i++) {
+        if (i < input.length() && input[i] == 'L') LR = false;
+        if (i < input.length() && input[i] == 'R') LR = true;
+
+        if (i < input.length() && isdigit(input[i])) {
+            step = step * 10 + (input[i] - '0');
+        }
+
+        if (i == input.length() || input[i] == ' ') {
+            if (step > 0) {
+                totalZeroHits += CountZeroCrossings(LR, step, number);
+                number = Rotate(LR, step, number);
+            }
+            step = 0;
+        }
+    }
+
+    cout << totalZeroHits << endl;
+}
