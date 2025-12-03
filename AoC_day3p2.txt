@@ -1,0 +1,38 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+int main() {
+    ifstream infile("input.txt");
+    string line;
+    long long total = 0;
+
+    const int k = 12;
+
+    while (getline(infile, line)) {
+        int n = (int)line.size();
+        string stack;
+
+        int to_remove = n - k;
+
+        for (char c : line) {
+            while (!stack.empty() && to_remove > 0 && stack.back() < c) {
+                stack.pop_back();
+                to_remove--;
+            }
+            stack.push_back(c);
+        }
+        stack.resize(k);
+
+        long long val = 0;
+        for (char c : stack) {
+            val = val * 10 + (c - '0');
+        }
+
+        total += val;
+    }
+
+    cout << total << endl;
+    return 0;
+}
