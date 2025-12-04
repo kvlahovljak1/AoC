@@ -1,0 +1,70 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+using namespace std;
+
+int main() {
+    ifstream infile("input.txt");
+    string line;
+    vector<string> grid;
+
+    while (getline(infile, line)) {
+        grid.push_back(line);
+    }
+
+    int rows = grid.size();
+    int cols = grid[0].size();
+
+    int dx[8] = { -1,-1,-1, 0,0, 1,1,1 };
+    int dy[8] = { -1, 0, 1,-1,1,-1,0,1 };
+
+    long long totalRemoved = 0;
+    bool changed = true;
+
+    while (changed) {
+        changed = false;
+
+        vector<vector<bool>> mark(rows, vector<bool>(cols, false));
+        int removed = 0;
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (grid[r][c] == '@') {
+                    int count = 0;
+
+                    for (int k = 0; k < 8; k++) {
+                        int newrows = r + dx[k];
+                        int newcols = c + dy[k];
+                        if (newrows >= 0 && newrows < rows && newcols >= 0 && newcols < cols) {
+                            if (grid[newrows][newcols] == '@') {
+                                count++;
+                            }
+                        }
+                    }
+
+                    if (count < 4) {
+                        mark[r][c] = true;
+                    }
+                }
+            }
+        }
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (mark[r][c]) {
+                    grid[r][c] = '.';
+                    removed++;
+                }
+            }
+        }
+
+        if (removed > 0) {
+            totalRemoved += removed;
+            changed = true;
+        }
+    }
+
+    cout << totalRemoved << endl;
+    return 0;
+}
