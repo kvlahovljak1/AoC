@@ -1,0 +1,55 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+bool isaValidNum(long long inputNum) {
+
+    string string = to_string(inputNum);
+    if (string.size() % 2 != 0) return false;
+    return string.substr(0, string.size() / 2) == string.substr(string.size() / 2);
+}
+
+
+int main() {
+
+    string line;
+    getline(cin, line);
+
+    vector<pair<long long, long long>> ranges;
+
+    long long a = 0, b = 0;
+    bool firsNum = true;
+
+    for (char c : line) {
+        if (isdigit(c)) {
+            if (firsNum) a = a * 10 + (c - '0');
+            else          b = b * 10 + (c - '0');
+        }
+        else if (c == '-') {
+            firsNum = false;
+        }
+        else if (c == ',') {
+            ranges.emplace_back(a, b);
+            a = b = 0;
+            firsNum = true;
+        }
+    }
+
+    ranges.emplace_back(a, b);
+
+    long long total = 0;
+
+    for (auto pair : ranges) {
+        long long L = pair.first;
+        long long R = pair.second;
+
+        for (long long n = L; n <= R; n++) {
+            if (isaValidNum(n)) {
+                total += n;
+            }
+        }
+    }
+
+    cout << total;
+}
